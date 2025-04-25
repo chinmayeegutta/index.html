@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Augur Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f3f4f6;
+    }
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 1rem;
+      padding: 20px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .card h2 {
+      margin-bottom: 10px;
+    }
+    .performance {
+      margin-top: 10px;
+      color: green;
+      font-weight: bold;
+    }
+    canvas {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard" id="dashboard"></div>
+
+  <script>
+    const distributors = [
+      {
+        name: "Distributor A",
+        lastMonthShipped: 1200,
+        forecastedNextMonth: 1350,
+        ytdAverage: 1100,
+        region: "North-East",
+        performance: "On Track"
+      },
+      {
+        name: "Distributor B",
+        lastMonthShipped: 950,
+        forecastedNextMonth: 1050,
+        ytdAverage: 980,
+        region: "South-Central",
+        performance: "At Risk"
+      },
+      {
+        name: "Distributor C",
+        lastMonthShipped: 1500,
+        forecastedNextMonth: 1450,
+        ytdAverage: 1400,
+        region: "West Coast",
+        performance: "Excellent"
+      }
+    ];
+
+    const container = document.getElementById('dashboard');
+
+    distributors.forEach((dist, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <h2>${dist.name}</h2>
+        <p><strong>Region:</strong> ${dist.region}</p>
+        <p>📦 Last Month: ${dist.lastMonthShipped} units</p>
+        <p>📈 Forecast Next Month: ${dist.forecastedNextMonth} units</p>
+        <p>📊 YTD Average: ${dist.ytdAverage} units/month</p>
+        <p class="performance">${dist.performance}</p>
+        <canvas id="chart-${i}" height="150"></canvas>
+      `;
+      container.appendChild(card);
+
+      const ctx = document.getElementById(`chart-${i}`).getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Last Month', 'Forecast', 'YTD Avg'],
+          datasets: [{
+            label: 'Units',
+            data: [dist.lastMonthShipped, dist.forecastedNextMonth, dist.ytdAverage],
+            backgroundColor: '#3182ce',
+            borderRadius: 4
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true
+            }
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+
